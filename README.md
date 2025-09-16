@@ -89,8 +89,8 @@ The script will print its progress to the console and create a `pypi_packages.cs
 
 ## 📬 Contact
 
-For questions or feedback, please connect with me on [LinkedIn](www.linkedin.com/in/aditya-chhabria123).
+For questions or feedback, please connect with me on [LinkedIn](https://linkedin.com/in/aditya-chhabria123).
 
 -----
 
-*Built with 💻 by [Aditya Chhabria]*
+*Built with 💻 by Aditya Chhabria*
