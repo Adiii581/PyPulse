@@ -17,7 +17,7 @@ SEARCH_TERM = "api"
 
 print(f"Starting PyPI Package Scraper for search term: '{SEARCH_TERM}'")
 
-# --- Step 2: Automatically Get the Right ChromeDriver ---
+# --- Step 2: Automatically gets the right ChromeDriver ---
 s = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=s)
 
@@ -32,7 +32,7 @@ stealth(driver,
       )
 # ------------------------
 
-# This is our "wait" helper. It will wait up to 10 seconds.
+# This is the "wait" helper. It will wait up to 10 seconds.
 wait = WebDriverWait(driver, 10)
 
 # --- Step 4: Search for Packages ---
@@ -64,8 +64,8 @@ except Exception as e:
     driver.quit()
     exit()
 
-# --- Step 5: Start the Multi-Page Scraping Loop ---
-packages_list = [] # This master list will hold all packages
+# --- Step 5: Starts the Multi-Page Scraping Loop ---
+packages_list = [] # This master list holds all packages
 page_number = 1
 
 # These are the new working selectors for PyPI
@@ -79,10 +79,10 @@ while True:
 
     # --- Step 5a: Scrape Current Page ---
     try:
-        # We wait for the first package card to be visible
+        # Waits for the first package card to be visible
         wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, PACKAGE_CARD_SELECTOR)))
 
-        # Now that we know they're loaded, get all of them
+        # Now that they're loaded, get all of them
         package_postings = driver.find_elements(By.CSS_SELECTOR, PACKAGE_CARD_SELECTOR)
 
         if not package_postings:
@@ -93,23 +93,23 @@ while True:
 
         for package in package_postings:
             try:
-                # Find elements using the new selectors
+                # Finds elements using the new selectors
                 title = package.find_element(By.CSS_SELECTOR, PACKAGE_TITLE_SELECTOR).text.strip()
                 description = package.find_element(By.CSS_SELECTOR, PACKAGE_DESC_SELECTOR).text.strip()
                 
-                # The whole "card" (the variable 'package') is the <a> tag, so we get its href
+                # The whole "card" (the variable 'package') is the <a> tag, so href is retrieved
                 url = package.get_attribute("href")
                 
                 packages_list.append([title, description, url])
                 print(f"Successfully scraped: {title}")
 
             except Exception as e:
-                # This will skip any "empty" <li> elements or promoted listings
+                # Skips any "empty" <li> elements or promoted listings
                 print(f"DEBUG: Failed to scrape one card. Error: {e}")
 
     except Exception as e:
         print(f"Error scraping page {page_number}: {e}")
-        break # Exit the loop if the page fails to load
+        break # Exits the loop if the page fails to load
     
     # --- Step 5b: Go to Next Page ---
     try:
@@ -122,46 +122,44 @@ while True:
         # --- SCROLL TO BOTTOM ---
         print("Scrolling to bottom of page...")
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(0.5) # Give the scroll a half-second to finish
+        time.sleep(0.5) # Gives the scroll a half-second to finish
         # ---------------------------
 
-        # Get a reference to the job cards we just scraped
+        # Gets a reference to the job cards scraped
         current_cards = driver.find_elements(By.CSS_SELECTOR, PACKAGE_CARD_SELECTOR)
         
-        # --- FINAL FIX: XPath Selector ---
-        # We find the element (any tag: *) that contains the text "Next"
-        # AND has BOTH of the classes you found. This is 100% unique.
+        # Find the element (any tag: *) that contains the text "Next"
         next_button = wait.until(EC.element_to_be_clickable((By.XPATH, 
             "//*[contains(text(), 'Next') and contains(@class, 'button') and contains(@class, 'button-group__button')]"
         )))
         
-        # Click it with Selenium's normal click
+        # Clicks it with Selenium's normal click
         next_button.click()
         # ---------------------------------
         
         page_number += 1
         
-        # Wait for the old cards to go stale
+        # Waits for the old cards to go stale
         print("Going to next page... waiting for new packages to load...")
         wait.until(EC.staleness_of(current_cards[0]))
 
     except Exception as e:
         print(f"\n--- PAGINATION FAILED (THIS IS THE ERROR) --- \n{e}\n-------------------\n")
-        break # Exit the while loop
+        break # Exits the while loop
 
-# --- Step 6: Save to CSV ---
+# --- Step 6: Saves to CSV ---
 print(f"\nScraping complete. Total packages found: {len(packages_list)}")
 
 if packages_list:
     print(f"Saving {len(packages_list)} packages to pypi_packages.csv...")
     with open('pypi_packages.csv', 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
-        # Update headers
+        # Updates headers
         writer.writerow(["Package Name", "Description", "URL"]) # Header
         writer.writerows(packages_list)
     print("Done! Check pypi_packages.csv.")
 else:
     print("No packages found to save.")
 
-# --- Step 7: All Done! ---
+# --- Step 7: Finish! ---
 driver.quit()
