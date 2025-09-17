@@ -67,7 +67,8 @@ python pypi_scraper.py
 ```
 
 The script will print its progress to the console and create a `pypi_packages.csv` file in the same directory when finished.
-**Note:** Save the pypi_packages.csv to another file, since the scraper overwrites all the previous content in the pypi_packages.csv file once it's started again. 
+
+**Note:** Copy the content in the pypi_packages.csv file to another file. Since, the scraper overwrites all the previous content in the pypi_packages.csv file once it's started again. 
 
 -----
 
