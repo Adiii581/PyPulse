@@ -7,6 +7,7 @@ This project is an advanced demonstration of browser automation, designed to nav
 **Note**: This tool is an educational project built to demonstrate advanced automation skills. It is intentionally a **"polite" scraper** that includes randomized delays to mimic human behavior and respect server load.
 
 🔗 **Target Website (Data source for PyPulse): [https://pypi.org](https://pypi.org)** 
+
 **Demo: https://youtu.be/JqIU3oK4b74**
 
 -----
